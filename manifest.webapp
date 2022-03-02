@@ -1,0 +1,48 @@
+{
+  "name": "Cozy harvest-app",
+  "slug": "cozy-harvest-app",
+  "icon": "icon.svg",
+  "categories": [],
+  "version": "0.1.0",
+  "licence": "AGPL-3.0",
+  "editor": "",
+  "source": "https://github.com/cozy/cozy-harvest-app.git@build",
+  "developer": {
+    "name": "cozy",
+    "url": ""
+  },
+  "routes": {
+    "/": {
+      "folder": "/",
+      "index": "index.html",
+      "public": false
+    }
+  },
+  "permissions": {
+    "apps": {
+      "description": "Required by the cozy-bar to display the icons of the apps",
+      "type": "io.cozy.apps",
+      "verbs": ["GET"]
+    },
+    "settings": {
+      "description": "Required by the cozy-bar to display Claudy and know which applications are coming soon",
+      "type": "io.cozy.settings",
+      "verbs": ["GET"]
+    },
+    "konnectors": {
+      "description": "Required to get the list of konnectors",
+      "type": "io.cozy.konnectors",
+      "verbs": ["GET", "POST", "PUT", "DELETE"]
+    },
+    "triggers": {
+      "description": "Required to run the konnectors",
+      "type": "io.cozy.triggers",
+      "verbs": ["ALL"]
+    },
+    "permissions": {
+      "description": "Required to run the konnectors",
+      "verbs": ["ALL"],
+      "type": "io.cozy.permissions"
+    }
+  }
+}

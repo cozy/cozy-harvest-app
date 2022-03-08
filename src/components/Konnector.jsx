@@ -29,18 +29,26 @@ export const Konnector = () => {
   const { konnectorSlug } = useParams()
   const history = useHistory()
   const client = useClient()
-  const [state, setState] = useState({ allTriggers: [], konnector: {} })
+  const [state, setState] = useState({
+    fetching: true,
+    allTriggers: [],
+    konnector: {}
+  })
 
   useEffect(() => {
     ;(async () => {
       const { data: konnectors } = await getAllKonnectors(client, konnectorSlug)
       const { data: allTriggers } = await getAllTriggers(client)
 
-      setState({ allTriggers, konnector: konnectors?.[0] || {} })
+      setState({
+        fetching: false,
+        allTriggers,
+        konnector: konnectors?.[0] || {}
+      })
     })()
   }, [client, konnectorSlug])
 
-  const triggersData = Object.keys(state.allTriggers).reduce(
+  const triggersData = Object.values(state.allTriggers).reduce(
     (acc, document) => {
       if (
         isKonnectorTrigger(document) &&
@@ -59,11 +67,15 @@ export const Konnector = () => {
   }
 
   return (
-    <HarvestRoutes
-      konnectorRoot={`/connected/${state.konnector?.slug}`}
-      konnector={konnectorWithTriggers}
-      onDismiss={() => history.push('/connected')}
-      datacardOptions={null}
-    />
+      {state.fetching ? (
+        <p>loading...</p>
+      ) : (
+        <HarvestRoutes
+          konnectorRoot={`/connected/${state.konnector?.slug}`}
+          konnector={konnectorWithTriggers}
+          onDismiss={() => history.push('/connected')}
+          datacardOptions={null}
+        />
+      )}
   )
 }

@@ -47,6 +47,7 @@
     "cozy-harvest-lib": "7.3.2",
     "cozy-intent": "1.11.1",
     "cozy-keys-lib": "3.8.0",
+    "cozy-realtime": "^4.0.5",
     "cozy-scripts": "6.1.4",
     "cozy-ui": "62.1.2",
     "react": "17.0.2",

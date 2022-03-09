@@ -1,79 +1,34 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import { useParams, useHistory } from 'react-router-dom'
 import get from 'lodash/get'
 
-import { useClient, Q } from 'cozy-client'
 import { Routes as HarvestRoutes } from 'cozy-harvest-lib'
-
-import { KONNECTORS_DOCTYPE, TRIGGERS_DOCTYPE } from 'src/doctypes'
-
-const isKonnectorTrigger = doc => {
-  return (
-    doc._type === TRIGGERS_DOCTYPE && !!doc.message && !!doc.message.konnector
-  )
-}
-
-const getAllKonnectors = async (client, konnectorSlug) => {
-  return await client.query(
-    Q(KONNECTORS_DOCTYPE).where({ slug: konnectorSlug })
-  )
-}
-
-const getAllTriggers = async client => {
-  return await client.query(
-    Q(TRIGGERS_DOCTYPE).where({ worker: ['client', 'konnector'] })
-  )
-}
+import useKonnectorWithTriggers from 'src/hooks/useKonnectorWithTriggers'
 
 export const Konnector = () => {
   const { konnectorSlug } = useParams()
   const history = useHistory()
-  const client = useClient()
-  const [state, setState] = useState({
-    fetching: true,
-    allTriggers: [],
-    konnector: {}
-  })
+  const { konnectorWithTriggers, fetching } =
+    useKonnectorWithTriggers(konnectorSlug)
 
-  useEffect(() => {
-    ;(async () => {
-      const { data: konnectors } = await getAllKonnectors(client, konnectorSlug)
-      const { data: allTriggers } = await getAllTriggers(client)
-
-      setState({
-        fetching: false,
-        allTriggers,
-        konnector: konnectors?.[0] || {}
-      })
-    })()
-  }, [client, konnectorSlug])
-
-  const triggersData = Object.values(state.allTriggers).reduce(
-    (acc, document) => {
-      if (
-        isKonnectorTrigger(document) &&
-        get(document, 'message.konnector') === konnectorSlug
-      ) {
-        acc.push(document)
-      }
-      return acc
-    },
-    []
-  )
-
-  const konnectorWithTriggers = {
-    ...state.konnector,
-    triggers: { data: triggersData }
-  }
-
-  if (state.fetching) {
-    return <p>Loading</p>
+  if (fetching) {
+    return <p></p>
   } else {
     return (
       <HarvestRoutes
-        konnectorRoot={`/connected/${state.konnector?.slug}`}
+        konnectorRoot={`/connected/${konnectorSlug}`}
         konnector={konnectorWithTriggers}
-        onDismiss={() => history.push('/connected')}
+        onDismiss={() => {
+          if (get(window, 'cozy.isFlagshipApp') === 'true') {
+            window.ReactNativeWebView.postMessage(
+              JSON.stringify({
+                message: 'closeHarvest'
+              })
+            )
+          } else {
+            history.push('/connected')
+          }
+        }}
         datacardOptions={null}
       />
     )

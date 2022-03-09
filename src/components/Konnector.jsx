@@ -4,6 +4,7 @@ import get from 'lodash/get'
 
 import { useClient, Q } from 'cozy-client'
 import { Routes as HarvestRoutes } from 'cozy-harvest-lib'
+import {isFlagshipApp} from 'cozy-device-helper'
 
 import { KONNECTORS_DOCTYPE, TRIGGERS_DOCTYPE } from 'src/doctypes'
 
@@ -73,7 +74,17 @@ export const Konnector = () => {
       <HarvestRoutes
         konnectorRoot={`/connected/${state.konnector?.slug}`}
         konnector={konnectorWithTriggers}
-        onDismiss={() => history.push('/connected')}
+        onDismiss={() => {
+          if (isFlagshipApp()) {
+            window.ReactNativeWebView.postMessage(
+              JSON.stringify({
+                message: 'closeHarvest'
+              })
+            )
+          } else {
+            history.push('/connected')
+          }
+        }}
         datacardOptions={null}
       />
     )

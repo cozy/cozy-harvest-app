@@ -66,16 +66,16 @@ export const Konnector = () => {
     triggers: { data: triggersData }
   }
 
-  return (
-      {state.fetching ? (
-        <p>loading...</p>
-      ) : (
-        <HarvestRoutes
-          konnectorRoot={`/connected/${state.konnector?.slug}`}
-          konnector={konnectorWithTriggers}
-          onDismiss={() => history.push('/connected')}
-          datacardOptions={null}
-        />
-      )}
-  )
+  if (state.fetching) {
+    return <p>Loading</p>
+  } else {
+    return (
+      <HarvestRoutes
+        konnectorRoot={`/connected/${state.konnector?.slug}`}
+        konnector={konnectorWithTriggers}
+        onDismiss={() => history.push('/connected')}
+        datacardOptions={null}
+      />
+    )
+  }
 }

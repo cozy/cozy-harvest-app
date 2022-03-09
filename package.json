@@ -44,7 +44,7 @@
   "dependencies": {
     "@material-ui/core": "4",
     "cozy-client": "27.19.1",
-    "cozy-harvest-lib": "7.3.2",
+    "cozy-harvest-lib": "7.3.3",
     "cozy-intent": "1.11.1",
     "cozy-keys-lib": "3.8.0",
     "cozy-realtime": "^4.0.5",

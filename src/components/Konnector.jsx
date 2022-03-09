@@ -73,7 +73,17 @@ export const Konnector = () => {
       <HarvestRoutes
         konnectorRoot={`/connected/${state.konnector?.slug}`}
         konnector={konnectorWithTriggers}
-        onDismiss={() => history.push('/connected')}
+        onDismiss={() => {
+          if (get(window, 'cozy.isFlagshipApp') === 'true') {
+            window.ReactNativeWebView.postMessage(
+              JSON.stringify({
+                message: 'closeHarvest'
+              })
+            )
+          } else {
+            history.push('/connected')
+          }
+        }}
         datacardOptions={null}
       />
     )
